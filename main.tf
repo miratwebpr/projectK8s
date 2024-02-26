@@ -11,7 +11,13 @@ resource "random_string" "suffix" {
   special = false
 }
 
-
+terraform {
+  backend "s3" {
+    bucket = "normis"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+  }
+}
 
 
 
