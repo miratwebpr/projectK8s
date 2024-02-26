@@ -12,3 +12,13 @@ variable "availability_zones" {
   type        = list(string)
   default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
+
+variable "ami_id" {
+    type = string
+    default = "ami-0c7217cdde317cfec"
+}
+
+variable "instance" {
+    type = string
+    default = "t3.medium"
+}
