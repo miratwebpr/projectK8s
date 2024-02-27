@@ -101,8 +101,6 @@ resource "aws_eks_node_group" "private-nodes" {
 resource "aws_launch_template" "eks-with-disks" {
   name = "eks-with-disks"
 
-  key_name = "local-provisioner"
-
   instance_type = var.instance
 
   image_id = var.ami_id
