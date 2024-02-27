@@ -187,6 +187,7 @@ module "irsa-ebs-csi" {
   provider_url                  = aws_eks_cluster.main.identity[0].oidc[0].issuer
   role_policy_arns              = [data.aws_iam_policy.ebs_csi_policy.arn]
   oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
+  depends_on = [aws_eks_node_group.private-nodes]
 }
 
 resource "aws_eks_addon" "ebs-csi" {
@@ -198,6 +199,7 @@ resource "aws_eks_addon" "ebs-csi" {
     "eks_addon" = "ebs-csi"
     "terraform" = "true"
   }
+  depends_on = [aws_eks_node_group.private-nodes]
 }
 
 
