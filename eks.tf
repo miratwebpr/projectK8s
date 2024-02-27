@@ -28,7 +28,7 @@ resource "aws_eks_cluster" "main" {
     role_arn = aws_iam_role.eks.arn
 
     vpc_config {
-        subnet_ids = concat(aws_subnet.public.*.id, aws_subnet.private.*.id)
+      subnet_ids = concat(aws_subnet.public.*.id, aws_subnet.private.*.id)
     }
 
     depends_on = [aws_iam_role_policy_attachment.eks]
@@ -100,8 +100,6 @@ resource "aws_eks_node_group" "private-nodes" {
 
 resource "aws_launch_template" "eks-with-disks" {
   name = "eks-with-disks"
-
-  key_name = "local-provisioner"
 
   instance_type = var.instance
 
