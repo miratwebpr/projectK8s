@@ -27,7 +27,7 @@ resource "aws_eks_cluster" "main" {
     name = "main"
     role_arn = aws_iam_role.eks.arn
 
-    # version = "1.27"
+    version = "1.27"
   
     vpc_config {
       subnet_ids = concat(aws_subnet.public.*.id, aws_subnet.private.*.id)
@@ -100,8 +100,50 @@ resource "aws_eks_node_group" "private-nodes" {
   ]
 }
 
+resource "aws_security_group" "main" {
+  name        = "instance_sg"
+  description = "Security group for instance"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 30000
+    to_port     = 32767
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_launch_template" "eks-with-disks" {
   name = "eks-with-disks"
+  vpc_security_group_ids = [aws_security_group.main.id]
 
   instance_type = var.instance
 
@@ -116,6 +158,8 @@ resource "aws_launch_template" "eks-with-disks" {
     }
   }
 }
+
+
 
 data "tls_certificate" "eks" {
   url = aws_eks_cluster.main.identity[0].oidc[0].issuer
